@@ -16,11 +16,36 @@ class FuzzyChiClassifier(BaseEstimator):
 
     Parameters
     ----------
-    demo_param : str, default='demo_param'
-        A parameter used for demonstation of how to pass and store paramters.
+    number_of_labels : int, how many classes need to classification
+
+    combination_type : int，1 (PRODUCT),0 (MINIMUM) 
+        T-norm for the Computation of the Compatibility Degree
+    rule_weight : int,1 (PCF_IV	，Penalized_Certainty_Factor),0(CF，Certainty_Factor),
+                      3(PCF_II，Average_Penalized_Certainty_Factor),3(NO_RW，No_Weights)
+    inference_type : 0 ( WINNING_RULE, WINNING_RULEWinning_Rule), 1(ADDITIVE_COMBINATION,Additive_Combination)
+          Fuzzy Reasoning Method
+    ranges : [[0.0 for y in range (2)] for x in range nVars], nVars=self.__nInputs + Attributes.getOutputNumAttributes(Attributes)
+
+
+    example :
+        Number of Labels = 3
+        T-norm for the Computation of the Compatibility Degree = Product
+        Rule Weight = Penalized_Certainty_Factor
+        Fuzzy Reasoning Method = Winning_Rule
+        ranges = [[0.0 for y in range (2)] for x in range 4]   
+                 [4,3         7.9
+                  2.0         4.4
+                  1.0         6.9
+                  0.1         2.5]
+
+
     """
-    def __init__(self, demo_param='demo_param'):
-        self.demo_param = demo_param
+    def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges):
+        self.number_of_labels = number_of_labels
+        self.combination_type = combination_type
+        self.rule_weight = rule_weight
+        self.inference_type = inference_type
+        self.ranges=ranges
 
     def fit(self, X, y):
         """A reference implementation of a fitting function.
@@ -32,7 +57,7 @@ class FuzzyChiClassifier(BaseEstimator):
         y : array-like, shape (n_samples,) or (n_samples, n_outputs)
             The target values (class labels in classification, real numbers in
             regression).
-
+        In fit function it will generate the rules and store it 
         Returns
         -------
         self : object
@@ -40,6 +65,14 @@ class FuzzyChiClassifier(BaseEstimator):
         """
         X, y = check_X_y(X, y, accept_sparse=True)
         self.is_fitted_ = True
+        
+        
+        execute()
+
+
+
+
+
         # `fit` should always return `self`
         return self
 
@@ -61,7 +94,7 @@ class FuzzyChiClassifier(BaseEstimator):
         return np.ones(X.shape[0], dtype=np.int64)
 
 
-class TemplateClassifier(BaseEstimator, ClassifierMixin):
+class FuzzyChiClassifier(BaseEstimator, ClassifierMixin):
     """ An example classifier which implements a 1-NN algorithm.
 
     For more information regarding how to build your own classifier, read more
