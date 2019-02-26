@@ -20,6 +20,19 @@ class parameter_prepare :
 
     __parameters={}
 
+    MINIMUM = 0
+    PRODUCT = 1
+    CF = 0
+    PCF_IV = 1
+    NO_RW = 3
+    PCF_II = 3
+    WINNING_RULE = 0
+    ADDITIVE_COMBINATION = 1
+
+    rule_weight = None
+    combination_type = None
+    inference_type =None
+
     # * Default constructor
 
     def __init__(self):
@@ -150,7 +163,7 @@ class parameter_prepare :
         if(key != ""):
             self.__parameters.append((key,value))
             #If the algorithm is non-deterministic the first parameter is the Random SEED
-    # """
+     # """
      # * It returns the algorithm name
      # *
      # * @return the algorithm name
@@ -236,5 +249,45 @@ class parameter_prepare :
      # """
     def get_output_file(self, pos):
         return self.__outputFiles[pos]
+
+     # """
+     # * It returns the combinationType
+     # """
+
+    def get_combination_type(self):
+        aux = str(self.get_parameter(1)).lower()
+        if (aux == "minimum"):
+            self.combination_type = self.MINIMUM
+        else:
+            self.combination_type = self.PRODUCT
+        return self.combination_type
+
+     # """
+     # * It returns the rule weight
+     # """
+    def get_rule_weight(self):
+        aux = str(self.get_parameter(2)).lower()
+        if (aux == "Certainty_Factor".lower()):
+            self.rule_weight = self.CF
+        elif (aux=="Average_Penalized_Certainty_Factor".lower()):
+            self.rule_weight = self.PCF_II
+        elif (aux=="No_Weights".lower()):
+            self.rule_weight = self.NO_RW
+        else:
+            self.rule_weight = self.PCF_IV
+
+        return self.rule_weight
+
+     # """
+     # * It returns the inference type
+     # """
+    def get_inference_type(self):
+        aux = str(self.get_parameter(3)).lower()
+        if(aux ==("Additive_Combination").lower()) :
+            self.inference_type = self.ADDITIVE_COMBINATION
+        else :
+            self.inference_type = self.WINNING_RULE
+
+        return self.inference_type
 
 
