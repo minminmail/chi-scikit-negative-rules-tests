@@ -6,6 +6,8 @@ This file is for prepare the config file and read training file or test file , t
 @ Python 3
 
 """
+
+from skltemplate.help_classes.MyDataSet import MyDataSet
 class parameter_prepare : 
 
     __algorithmName=""
@@ -291,3 +293,65 @@ class parameter_prepare :
         return self.inference_type
 
 
+    def process_parameters(self,parameters):
+        print("__init__ of Fuzzy_Chi begin...")
+        self.train_myDataSet = MyDataSet()
+        self.val_myDataSet = MyDataSet()
+        self.test_myDataSet = MyDataSet()
+        try:
+          print("Reading the training set: ")
+          inputTrainingFile= parameters.getInputTrainingFiles()
+          print("In Fuzzy Chi init method the training file is :" + inputTrainingFile)
+          self.train_myDataSet.readClassificationSet(inputTrainingFile, True)
+          print(" ********* train_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
+
+          print("Reading the validation set: ")
+          inputValidationFile=parameters.getValidationInputFile()
+          self.val_myDataSet.readClassificationSet(inputValidationFile, False)
+          print(" ********* val_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
+
+          print("Reading the test set: ")
+          self.test_myDataSet.readClassificationSet(parameters.getInputTestFiles(), False)
+          print(" ********* test_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
+
+        except IOError as ioError :
+            print ("I/O error: "+ str(ioError))
+            self.somethingWrong = True
+        except Exception as e:
+            print("Unexpected error:" + str(e))
+            self.somethingWrong = True
+        #
+        #     #We may check if there are some numerical attributes, because our algorithm may not handle them:
+        #     #somethingWrong = somethingWrong || train.hasNumericalAttributes();
+        print(" ********* Three type of myDataSet readClassificationSet finished !!!!!! *********")
+        self.somethingWrong = self.somethingWrong or self.train_myDataSet.hasMissingAttributes()
+
+        self.outputTr = parameters.getTrainingOutputFile()
+        self.outputTst = parameters.getTestOutputFile()
+
+        self.fileDB = parameters.getOutputFile(0)
+        self.fileRB = parameters.getOutputFile(1)
+             #Now we parse the parameters
+
+        #self.nLabels = parameters.getParameter(0)
+        self.nLabels = parameters.getParameter(0)
+        print("nLabels is :" + str(self.nLabels))
+        aux = str(parameters.getParameter(1)).lower() #Computation of the compatibility degree
+        print("parameter 1 aux is :" + str(aux))
+        self.combinationType = self.PRODUCT
+        if (aux == "minimum"):
+            self.combinationType = self.MINIMUM
+        aux = str(parameters.getParameter(2)).lower()
+        print("parameter 2 aux is :" + str(aux))
+        self.ruleWeight = self.PCF_IV
+        if (aux == "Certainty_Factor".lower()):
+            self.ruleWeight = self.CF
+        elif (aux=="Average_Penalized_Certainty_Factor".lower()):
+            self.ruleWeight = self.PCF_II
+        elif (aux=="No_Weights".lower()):
+            self.ruleWeight = self.NO_RW
+        aux = str(parameters.getParameter(3)).lower()
+        print("parameter 3 aux is :" + str(aux))
+        self.inferenceType = self.WINNING_RULE
+        if(aux ==("Additive_Combination").lower()) :
+            self.inferenceType = self.ADDITIVE_COMBINATION

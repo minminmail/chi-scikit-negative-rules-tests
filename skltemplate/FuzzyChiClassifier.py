@@ -6,9 +6,20 @@ from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import euclidean_distances
+from skltemplate import parameter_prepare
+from skltemplate.help_classes.MyDataSet import MyDataSet
 
 
 class FuzzyChiClassifier(BaseEstimator):
+
+    number_of_labels = None
+    combination_type = None
+    rule_weight = None
+    inference_type = None
+    ranges=ranges = None
+    classes_ = None
+    train_dataSet= None
+
     """ A template estimator to be used as a reference implementation.
 
     For more information regarding how to build your own estimator, read more
@@ -40,12 +51,13 @@ class FuzzyChiClassifier(BaseEstimator):
 
 
     """
-    def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges):
+    def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges,train_dataSet):
         self.number_of_labels = number_of_labels
         self.combination_type = combination_type
         self.rule_weight = rule_weight
         self.inference_type = inference_type
         self.ranges=ranges
+        self.train_dataSet=train_dataSet
 
     def fit(self, X, y):
         """A reference implementation of a fitting function.
@@ -65,15 +77,27 @@ class FuzzyChiClassifier(BaseEstimator):
         """
         X, y = check_X_y(X, y, accept_sparse=True)
         self.is_fitted_ = True
-        
-        
-        execute()
+          
+        # Store the classes seen during fit
+        self.classes_ = unique_labels(y)
+           
+        self.X_ = X
+        self.y_ = y
 
+        self.dataBase = DataBase()
+        """
+         self.train_myDataSet.getnInputs()=len(self.inputAttr)=input_attr_length
+         self.train_myDataSet.getNames()= nombres = ["" for x in range(self.__nInputs)]=nombres[i] = Attributes.getInputAttribute(Attributes,i).getName()
 
+        """
 
+        self.dataBase.setMultipleParameters(self.train_dataSet.getnInputs(), self.number_of_labels,self.ranges,self.train_dataSet.getNames())
+        print("DataBase object has been created......")
+        self.ruleBase = RuleBase(self.dataBase, self.inference_type, self.combination_type,self.rule_weight, self.train_dataSet.getNames(), self.classes_)
 
-
-        # `fit` should always return `self`
+        print("Data Base:\n"+self.dataBase.printString())
+        self.ruleBase.Generation(self.train_dataSet)
+        # Return the classifier
         return self
 
     def predict(self, X):
@@ -87,74 +111,12 @@ class FuzzyChiClassifier(BaseEstimator):
         Returns
         -------
         y : ndarray, shape (n_samples,)
-            Returns an array of ones.
+            The label for each sample is the label of the closest sample
+            seen udring fit.
         """
         X = check_array(X, accept_sparse=True)
         check_is_fitted(self, 'is_fitted_')
         return np.ones(X.shape[0], dtype=np.int64)
-
-
-class FuzzyChiClassifier(BaseEstimator, ClassifierMixin):
-    """ An example classifier which implements a 1-NN algorithm.
-
-    For more information regarding how to build your own classifier, read more
-    in the :ref:`User Guide <user_guide>`.
-
-    Parameters
-    ----------
-    demo_param : str, default='demo'
-        A parameter used for demonstation of how to pass and store paramters.
-
-    Attributes
-    ----------
-    X_ : ndarray, shape (n_samples, n_features)
-        The input passed during :meth:`fit`.
-    y_ : ndarray, shape (n_samples,)
-        The labels passed during :meth:`fit`.
-    classes_ : ndarray, shape (n_classes,)
-        The classes seen at :meth:`fit`.
-    """
-    def __init__(self, demo_param='demo'):
-        self.demo_param = demo_param
-
-    def fit(self, X, y):
-        """A reference implementation of a fitting function for a classifier.
-
-        Parameters
-        ----------
-        X : array-like, shape (n_samples, n_features)
-            The training input samples.
-        y : array-like, shape (n_samples,)
-            The target values. An array of int.
-
-        Returns
-        -------
-        self : object
-            Returns self.
-        """
-        # Check that X and y have correct shape
-        X, y = check_X_y(X, y)
-        # Store the classes seen during fit
-        self.classes_ = unique_labels(y)
-
-        self.X_ = X
-        self.y_ = y
-        # Return the classifier
-        return self
-
-    def predict(self, X):
-        """ A reference implementation of a prediction for a classifier.
-
-        Parameters
-        ----------
-        X : array-like, shape (n_samples, n_features)
-            The input samples.
-
-        Returns
-        -------
-        y : ndarray, shape (n_samples,)
-            The label for each sample is the label of the closest sample
-            seen udring fit.
         """
         # Check is fit had been called
         check_is_fitted(self, ['X_', 'y_'])
@@ -164,73 +126,523 @@ class FuzzyChiClassifier(BaseEstimator, ClassifierMixin):
 
         closest = np.argmin(euclidean_distances(X, self.X_), axis=1)
         return self.y_[closest]
-
-
-class TemplateTransformer(BaseEstimator, TransformerMixin):
-    """ An example transformer that returns the element-wise square root.
-
-    For more information regarding how to build your own transformer, read more
-    in the :ref:`User Guide <user_guide>`.
-
-    Parameters
-    ----------
-    demo_param : str, default='demo'
-        A parameter used for demonstation of how to pass and store paramters.
-
-    Attributes
-    ----------
-    n_features_ : int
-        The number of features of the data passed to :meth:`fit`.
-    """
-    def __init__(self, demo_param='demo'):
-        self.demo_param = demo_param
-
-    def fit(self, X, y=None):
-        """A reference implementation of a fitting function for a transformer.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape (n_samples, n_features)
-            The training input samples.
-        y : None
-            There is no need of a target in a transformer, yet the pipeline API
-            requires this parameter.
-
-        Returns
-        -------
-        self : object
-            Returns self.
         """
-        X = check_array(X, accept_sparse=True)
 
-        self.n_features_ = X.shape[1]
+class DataBase:
+    n_variables = None
+    n_labels = None
+    dataBase = []
+    names = []
+     # Default constructor
+    def __init__(self):
+        self.n_variables = None
+        self.n_labels = None
 
-        # Return the transformer
-        return self
+          # Constructor with parameters. It performs a homegeneous partition of the input space for
+          # a given number of fuzzy labels.
+          # @param n_variables int Number of input variables of the problem
+          # @param n_labels int Number of fuzzy labels
+          # @param rangos double[][] Range of each variable (minimum and maximum values)
+          # @param names String[] Labels for the input attributes
 
-    def transform(self, X):
-        """ A reference implementation of a transform function.
+    def setMultipleParameters(self, n_variables, n_labels, rangos, names):
+            print("setMultipleParameters begin...")
+            self.n_variables = int(n_variables)
+            self.n_labels = int(n_labels)
+            print("self.n_variables: "+ str(self.n_variables)+" self.n_labels : "+str(self.n_labels))
+            #First columns , Second rows
+            self.dataBase = [[Fuzzy() for y in range(self.n_labels)] for x in range (self.n_variables)]
+            self.names = names
+            marca=0.0
 
-        Parameters
-        ----------
-        X : {array-like, sparse-matrix}, shape (n_samples, n_features)
-            The input samples.
+            for  i in range(0,self.n_variables):
+                print("i= " + str(i))
+                marca = (float(rangos[i][1]) - float(rangos[i][0])) / ( float(n_labels) - 1)
+                if marca == 0: #there are no ranges (an unique valor)
+                    print("Marca =0 in DataBase init method...")
 
-        Returns
-        -------
-        X_transformed : array, shape (n_samples, n_features)
-            The array containing the element-wise square roots of the values
-            in ``X``.
-        """
-        # Check is fit had been called
-        check_is_fitted(self, 'n_features_')
+                    for etq in range(0,self.n_labels):
+                        print("etq= " + str(etq))
+                        self.dataBase[i][etq] =  Fuzzy()
+                        self.dataBase[i][etq].x0 = rangos[i][1] - 0.00000000000001
+                        self.dataBase[i][etq].x1 = rangos[i][1]
+                        self.dataBase[i][etq].x3 = rangos[i][1] + 0.00000000000001
+                        self.dataBase[i][etq].y = 1
+                        self.dataBase[i][etq].name = "L_" + str(etq)
+                        self.dataBase[i][etq].label = etq
 
-        # Input validation
-        X = check_array(X, accept_sparse=True)
+                else:
+                    print("Marca !=0 in DataBase init method...")
+                    print("n_labels = "+n_labels)
+                    for etq in range(0, int(n_labels)):
+                        print(" i = " + str(i) + ",etq = " + str(etq))
+                        self.dataBase[i][etq].x0 = rangos[i][0] + marca * (etq - 1)
+                        self.dataBase[i][etq].x1 = rangos[i][0] + marca * etq
+                        self.dataBase[i][etq].x3 = rangos[i][0] + marca * (etq + 1)
+                        self.dataBase[i][etq].y = 1
+                        self.dataBase[i][etq].name = ("L_" + str(etq))
+                        self.dataBase[i][etq].label = etq
+    # '''
+    #      * @return int the number of input variables
+    # '''
+    def numVariables(self):
+     return self.n_variables
 
-        # Check that the input is of the same shape as the one passed
-        # during fit.
-        if X.shape[1] != self.n_features_:
-            raise ValueError('Shape of input is different from what was seen'
-                             'in `fit`')
-        return np.sqrt(X)
+     # '''
+     #     * @return int the number of fuzzy labels
+     # '''
+    def numLabels(self):
+        return self.n_labels
+
+    # '''
+    #      * It computes the membership degree for a input value
+    #      * @param i int the input variable id
+    #      * @param j int the fuzzy label id
+    #      * @param X double the input value
+    #      * @return double the membership degree
+    #      */
+    # '''
+    def  membershipFunction(self,i, j, X):
+            print("len(self.dataBase[0])"+str(len(self.dataBase)))
+            value = self.dataBase[i][j].setX(X)
+            print("Get value form Fuzzy setX is :" + str(value))
+            return value
+
+    # '''
+    #      * It makes a copy of a fuzzy label
+    #      * @param i int the input variable id
+    #      * @param j int the fuzzy label id
+    #      * @return Fuzzy a copy of a fuzzy label
+    # '''
+    def clone(self,i, j) :
+            return self.dataBase[i][j]
+
+    # '''
+    #      * It prints the Data Base into an string
+    #      * @return String the data base
+    # '''
+    def printString(self) :
+            cadena =  "@Using Triangular Membership Functions as antecedent fuzzy sets\n"
+            cadena += "@Number of Labels per variable: " + str(self.n_labels) + "\n"
+            numrows=len(self.dataBase)
+            print("numrows: " + str(numrows))
+            numcols=len(self.dataBase[0])
+
+            print("numrows: " + str(numrows) + "numcols:"+ str(numcols))
+            if(self.dataBase.size!=0):
+                print("cadena: "+cadena)
+                for i in range(0, self.n_variables):
+                    print("i = " + str(i))
+                    print("cadena: " + cadena)
+                    cadena += "\n" + self.names[i] + ":\n"
+                    for j in range(0, self.n_labels):
+                        print("i = " + str(i))
+                        cadena += " L_" + str(int(j + 1)) + ": (" + str(self.dataBase[i][j].x0) +  "," + str(self.dataBase[i][j].x1) + "," + str(self.dataBase[i][j].x3) + ")\n"
+            else:
+                print("self.dataBase is None")
+
+            return cadena
+
+    # '''
+    #      * It writes the Data Base into an output file
+    #      * @param filename String the name of the output file
+    # '''
+    def writeFile(self,filename):
+
+            file=open(filename, "w")
+            outputString = self.printString()
+            file.write(outputString)
+            file.close()
+class RuleBase :
+
+    ruleBase=[]
+    dataBase=DataBase()
+    n_variables= None
+    n_labels= None
+    ruleWeight= None
+    inferenceType= None
+    compatibilityType= None
+    names=[]
+    classes=[]
+
+        # /**
+        #  * Rule Base Constructor
+        #  * @param dataBase DataBase the Data Base containing the fuzzy partitions
+        #  * @param inferenceType int the inference type for the FRM
+        #  * @param compatibilityType int the compatibility type for the t-norm
+        #  * @param ruleWeight int the rule weight heuristic
+        #  * @param names String[] the names for the features of the problem
+        #  * @param classes String[] the labels for the class attributes
+        #  */
+
+    def __init__(self, dataBase,  inferenceType,  compatibilityType, ruleWeight, names,  classes):
+            print("RuleBase init begin...")
+            self.ruleBase = []
+            self.dataBase = dataBase
+            self.n_variables = dataBase.numVariables()
+            self.n_labels = dataBase.numLabels()
+            self.inferenceType = inferenceType
+            self.compatibilityType = compatibilityType
+            self.ruleWeight = ruleWeight
+            self.names = names
+            self.classes = classes
+
+         # * It checks if a specific rule is already in the rule base
+         # * @param r Rule the rule for comparison
+         # * @return boolean true if the rule is already in the rule base, false in other case
+
+    def duplicated(self,rule):
+            i = 0
+            found = False
+            while ((i < len(self.ruleBase)) and (not found)):
+                found = self.ruleBase[i].comparison(rule)
+                i+=1
+            return found
+
+         # * Rule Learning Mechanism for the Chi et al.'s method
+         # * @param train myDataset the training data-set
+
+    def Generation( self,train) :
+            print("In Generation, the size of train is :" +str(train.size()))
+            for i in range( 0, train.size()) :
+                rule = self.searchForBestAntecedent(train.getExample(i),train.getOutputAsIntegerWithPos(i))
+                rule.assingConsequent(train, self.ruleWeight)
+                if (not (self.duplicated(rule)) and(rule.weight > 0)):
+                    self.ruleBase.append(rule)
+         # * This function obtains the best fuzzy label for each variable of the example and assigns
+         # * it to the rule
+         # * @param example double[] the input example
+         # * @param clas int the class of the input example
+         # * @return Rule the fuzzy rule with the highest membership degree with the example
+
+    def searchForBestAntecedent(self,example,clas):
+            ruleInstance=Rule( )
+            ruleInstance.setTwoParameters(self.n_variables, self.compatibilityType)
+            print("In searchForBestAntecedent ,self.n_variables is :" + str(self.n_variables))
+            ruleInstance.setClass(clas)
+            print("In searchForBestAntecedent ,self.n_labels is :" + str(self.n_labels))
+            for i in range( 0,self.n_variables):
+                max = 0.0
+                etq = -1
+                per= None
+                for j in range( 0, self.n_labels) :
+                    print("Inside the second loop of searchForBestAntecedent......")
+                    per = self.dataBase.membershipFunction(i, j, example[i])
+                    if (per > max) :
+                        max = per
+                        etq = j
+                if (max == 0.0) :
+                    print("There was an Error while searching for the antecedent of the rule")
+                    print("Example: ")
+                    for j in range(0,self.n_variables):
+                        print(example[j] + "\t")
+
+                    print("Variable " + str(i))
+                    exit(1)
+
+                ruleInstance.antecedent[i] = self.dataBase.clone(i, etq)
+            return ruleInstance
+         # * It prints the rule base into an string
+         # * @return String an string containing the rule base
+
+    def printString(self) :
+            i=None
+            j= None
+            cadena = ""
+            cadena += "@Number of rules: " + str(len(self.ruleBase)) + "\n\n"
+            for i in range( 0, len(self.ruleBase)):
+                rule = self.ruleBase[i]
+                cadena += str(i + 1) + ": "
+                for j in range(0,  self.n_variables - 1) :
+                    cadena += self.names[j] + " IS " + rule.antecedent[j].name + " AND "
+                j=j+1
+                cadena += self.names[j] + " IS " + rule.antecedent[j].name + ": " + str(self.classes[rule.clas]) + " with Rule Weight: " + str(rule.weight) + "\n"
+            print("RuleBase cadena is:" + cadena)
+            return cadena
+
+         # * It writes the rule base into an ouput file
+         # * @param filename String the name of the output file
+
+    def writeFile(self,filename) :
+            outputString = ""
+            outputString = self.printString()
+            file = open(filename, "w")
+            file.write(outputString)
+            file.close()
+         # * Fuzzy Reasoning Method
+         # * @param example double[] the input example
+         # * @return int the predicted class label (id)
+
+    def FRM(self,example):
+          if (self.inferenceType == parameter_prepare.parameter_prepare.WINNING_RULE):
+                return self.FRM_WR(example)
+          else :
+                return self.FRM_AC(example)
+
+         # * Winning Rule FRM
+         # * @param example double[] the input example
+         # * @return int the class label for the rule with highest membership degree to the example
+    def FRM_WR(self,example):
+            clas = -1
+            max = 0.0
+            for i in range( 0, len(self.ruleBase)):
+                rule= self.ruleBase[i]
+                produc = rule.compatibility(example)
+                produc *= rule.weight
+                if (produc > max) :
+                    max = produc
+                    clas = rule.clas
+            return clas
+
+     # * Additive Combination FRM
+     # * @param example double[] the input example
+     # * @return int the class label for the set of rules with the highest sum of membership degree per class
+
+    def FRM_AC(self,example):
+         clas = -1
+         class_degrees = []
+         for i in range( 0, len(self.ruleBase)) :
+            rule = self.ruleBase[i]
+            produc = rule.compatibility(example)
+            produc *= rule.weight
+            if (rule.clas > len(class_degrees) - 1) :
+                aux = [ 0.0 for x in range (len(class_degrees))]
+                for j in range( 0, len(aux)):
+                    aux[j] = class_degrees[j]
+
+                class_degrees = [ 0.0 for x in range (rule.clas+1)]
+                for j in range( 0,len(aux)):
+                    class_degrees[j] = aux[j]
+
+            class_degrees[rule.clas] += produc
+
+         max = 0.0
+         for l in range( 0,len(class_degrees)):
+            if (class_degrees[l] > max) :
+                max = class_degrees[l]
+                clas = l
+
+         return clas
+
+class Fuzzy :
+   # Default constructor
+  x0= None
+  x1= None
+  x3= None
+  y = None
+  name=""
+  label= None
+
+  def __init__(self):
+     print("init of Fuzzy Class ")
+
+
+   # * If fuzzyfies a crisp value
+   # * @param X double The crips value
+   # * @return double the degree of membership
+   # */
+
+  def setX( self,X) :
+        #print("Set Fuzzy X method begin ......")
+        #print("X = " +str(X)+" ,self.x0 = "+str(self.x0)+" ,self.x1 = "+str(self.x1)+", self.x3 = " + str(self.x3))
+        if ( (X <= self.x0) or (X >= self.x3)): # /* If X is not in the range of D, the */
+          #print("(X <= self.x0) or (X >= self.x3)")
+          return 0.0 #/* membership degree is 0 */
+
+        if (X < self.x1) :
+          #print("X <  self.x1")
+          return ( (X - self.x0) * (self.y / (self.x1 - self.x0)))
+
+        if (X > self.x1) :
+          #print("X > self.x1")
+          return ( (self.x3 - X) * (self.y / (self.x3 - self.x1)))
+
+        return self.y
+
+         # /**
+         #   * It makes a copy for the object
+         #   * @return Fuzzy a copy for the object
+         #   */
+
+  def  clone(self):
+        d = Fuzzy()
+        d.x0 = self.x0
+        d.x1 = self.x1
+        d.x3 = self.x3
+        d.y = self.y
+        d.name = self.name
+        d.label = self.label
+        return d
+class Rule:
+
+  antecedent=None
+  clas=None
+  weight=None
+  compatibilityType=None
+
+  def __init__(self):
+    print("__init__ of Rule")
+
+  #Default constructor
+
+     # * Constructor with parameters
+     # * @param n_variables int
+     # * @param compatibilityType int
+
+  def setTwoParameters( self,n_variables,  compatibilityType):
+    print("In rule calss , setTwoParameters method, the n_variables = "+str(n_variables))
+    self.antecedent = [Fuzzy() for x in range(n_variables)]
+    self.compatibilityType = compatibilityType
+
+     # * It assigns the class of the rule
+     # * @param clas int
+
+  def setClass(self, clas):
+    self.clas = clas
+
+   # * It assigns the rule weight to the rule
+   # * @param train myDataset the training set
+   # * @param ruleWeight int the type of rule weight
+
+  def assingConsequent(self,train, ruleWeight) :
+    if ruleWeight == parameter_prepare.parameter_prepare.CF:
+      self.consequent_CF(train)
+
+    elif ruleWeight == parameter_prepare.parameter_prepare.PCF_II:
+      self.consequent_PCF2(train)
+
+    elif ruleWeight == parameter_prepare.parameter_prepare.PCF_IV:
+      self.consequent_PCF4(train)
+
+    elif ruleWeight == parameter_prepare.parameter_prepare.NO_RW:
+      self.weight = 1.0
+
+   # * It computes the compatibility of the rule with an input example
+   # * @param example double[] The input example
+   # * @return double the degree of compatibility
+
+  def compatibility(self,example):
+    if (self.compatibilityType == parameter_prepare.parameter_prepare.MINIMUM):
+      #print("self.compatibilityType == Fuzzy_Chi.Fuzzy_Chi.MINIMUM")
+      return self.minimumCompatibility(example)
+
+    else :
+      #print("self.compatibilityType != Fuzzy_Chi.Fuzzy_Chi.MINIMUM"+", self.compatibilityType = "+ str(self.compatibilityType))
+      return self.productCompatibility(example)
+
+
+   # * Operator T-min
+   # * @param example double[] The input example
+   # * @return double the computation the the minimum T-norm
+
+  def minimumCompatibility(self,example):
+    minimum=None
+    membershipDegree=None
+    minimum = 1.0
+    for i in range(0, len(self.antecedent)):
+      print("example["+str(i)+"] = "+example[i])
+      membershipDegree = self.antecedent[i].setX(example[i])
+      print("membershipDegree in minimumCompatibility = " + str(membershipDegree))
+      minimum = min(membershipDegree, minimum)
+
+    return minimum
+
+   # * Operator T-product
+   # * @param example double[] The input example
+   # * @return double the computation the the product T-norm
+
+  def productCompatibility(self, example):
+
+    product = 1.0
+    antecedent_number=len(self.antecedent)
+    #print("antecedent_number = " + str(antecedent_number))
+    for i in range( 0, antecedent_number):
+      #print("example[i="+ str(i)+"]"+":"+ str(example[i]))
+      membershipDegree = self.antecedent[i].setX(example[i])
+      #print("membershipDegree in productCompatibility  = " +str(membershipDegree))
+      product = product * membershipDegree
+    #print("product: "+ str(product))
+    return product
+
+   # * Classic Certainty Factor weight
+   # * @param train myDataset training dataset
+
+  def consequent_CF( self,train):
+    train_Class_Number = train.getnClasses()
+    classes_sum = [0.0 for x in range(train_Class_Number)]
+    for i in range( 0,train.getnClasses()):
+       classes_sum[i] = 0.0
+
+    total = 0.0
+    comp = None
+    #Computation of the sum by classes */
+    for i in range( 0,train.size()):
+      comp = self.compatibility(train.getExample(i))
+      classes_sum[train.getOutputAsIntegerWithPos(i)] = classes_sum[train.getOutputAsIntegerWithPos(i)]+ comp
+      total =total+ comp
+
+    print("classes_sum[self.clas]  = " + str(classes_sum[self.clas] ) +"total" +str(total))
+    self.weight = classes_sum[self.clas] / total
+
+   # * Penalized Certainty Factor weight II (by Ishibuchi)
+   # * @param train myDataset training dataset
+
+  def consequent_PCF2(self,train) :
+    classes_sum = np.zeros(train.getnClasses())
+
+    total = 0.0
+    comp = None
+  # Computation of the sum by classes */
+    for i in range (0,  train.size()):
+      comp = self.compatibility(train.getExample(i))
+      classes_sum[train.getOutputAsIntegerWithPos(i)] = classes_sum[train.getOutputAsIntegerWithPos(i)]+comp
+      total = total+comp
+
+    sum = (total - classes_sum[self.clas]) / (train.getnClasses() - 1.0)
+    self.weight = (classes_sum[self.clas] - sum) / total
+
+   # * Penalized Certainty Factor weight IV (by Ishibuchi)
+   # * @param train myDataset training dataset
+
+  def consequent_PCF4( self,train) :
+    classes_sum =  [0.0 for x in range(train.getnClasses())]
+    for  i in range( 0, train.getnClasses()):
+      classes_sum[i] = 0.0
+
+    total = 0.0
+    comp= None
+
+    train_size=train.size()
+    print("train_size: " + str(train_size))
+    # Computation of the sum by classes */
+    for i in range( 0, train_size):
+      comp = self.compatibility(train.getExample(i))
+      print("comp = " + str(comp))
+      classes_sum[train.getOutputAsIntegerWithPos(i)] = classes_sum[train.getOutputAsIntegerWithPos(i)]+ comp
+      total = total+ comp
+
+    print("self.clas ="+ str(self.clas)+"classes_sum[self.clas] :" + str(classes_sum[self.clas]))
+    sum = total - classes_sum[self.clas]
+    self.weight = (classes_sum[self.clas] - sum) / total
+
+   # * This function detects if one rule is already included in the Rule Set
+   # * @param r Rule Rule to compare
+   # * @return boolean true if the rule already exists, else false
+
+  def comparison(self,rule) :
+    contador = 0
+    for j in range (0, len(self.antecedent)):
+      if (self.antecedent[j].label == rule.antecedent[j].label) :
+        contador= contador + 1
+
+    if (contador == len(rule.antecedent)):
+      if (self.clas != rule.clas) : #Comparison of the rule weights
+        if (self.weight < rule.weight) :
+          #Rule Update
+          self.clas = rule.clas
+          self.weight = rule.weight
+
+      return True
+    else:
+      return False
+
