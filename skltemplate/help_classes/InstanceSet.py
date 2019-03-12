@@ -50,13 +50,13 @@
 #  * @see Instance
 #  * @see Attributes
 #
-from Help_Classes.FormatErrorKeeper import FormatErrorKeeper
-from Help_Classes.InstanceParser import InstanceParser
-from Help_Classes.Attribute import Attribute
-from Help_Classes.Attributes import Attributes
-from Help_Classes.InstanceAttributes import InstanceAttributes
-from Help_Classes.Instance import Instance
-from Help_Classes.ErrorInfo import ErrorInfo
+from skltemplate.help_classes.FormatErrorKeeper import FormatErrorKeeper
+from skltemplate.help_classes.InstanceParser import InstanceParser
+from skltemplate.help_classes.Attribute import Attribute
+from skltemplate.help_classes.Attributes import Attributes
+from skltemplate.help_classes.InstanceAttributes import InstanceAttributes
+from skltemplate.help_classes.Instance import Instance
+from skltemplate.help_classes.ErrorInfo import ErrorInfo
 from pathlib import Path
 
 class InstanceSet:

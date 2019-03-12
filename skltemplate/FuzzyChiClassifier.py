@@ -10,7 +10,7 @@ from skltemplate import parameter_prepare
 from skltemplate.help_classes.MyDataSet import MyDataSet
 
 
-class FuzzyChiClassifier(BaseEstimator):
+class FuzzyChiClassifier():
 
     number_of_labels = None
     combination_type = None

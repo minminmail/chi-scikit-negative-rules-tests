@@ -46,7 +46,7 @@
 #  *
 #  */
 
-from Help_Classes.Attribute import Attribute
+from skltemplate.help_classes.Attribute import Attribute
 class ErrorInfo :
 
     # /**

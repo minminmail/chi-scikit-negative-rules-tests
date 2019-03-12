@@ -48,7 +48,8 @@
  # */
 
 
-from Help_Classes import Attribute, Attributes
+from skltemplate.help_classes.Attribute import Attribute
+from skltemplate.help_classes.Attributes import Attributes
 
 
 class InstanceAttributes :

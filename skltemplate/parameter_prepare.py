@@ -35,6 +35,12 @@ class parameter_prepare :
     combination_type = None
     inference_type =None
 
+    train_myDataSet = None
+    val_myDataSet = None
+    test_myDataSet = None
+
+    nLabels = None
+
     # * Default constructor
 
     def __init__(self):
@@ -44,6 +50,7 @@ class parameter_prepare :
 
 
     def parse_configuration_file(self,file_name) :
+        print("parse_configuration_file begin...... ")
         file = open(file_name,"r")
         file_String = file.read()
         line =  file_String.splitlines()
@@ -58,6 +65,9 @@ class parameter_prepare :
                 self._read_output_files(line[line_number])#We read all the output files
             else: # read parameters and save into map
                 self._read_all_parameters(line[line_number])  # We read all the possible parameters
+        print("call process_parameters begin...... ")
+        self.process_parameters()
+        print("parse_configuration_file end...... ")
     
      # """
      #     * It reads the name of the algorithm from the configuration file

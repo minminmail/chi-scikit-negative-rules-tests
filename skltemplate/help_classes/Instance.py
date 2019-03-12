@@ -43,10 +43,10 @@
 #  */
 
 
-from Help_Classes.Attribute import Attribute
-from Help_Classes.Attributes import Attributes
-from Help_Classes.InstanceParser import InstanceParser
-from Help_Classes.ErrorInfo import ErrorInfo
+from skltemplate.help_classes.Attribute import Attribute
+from skltemplate.help_classes.Attributes import Attributes
+from skltemplate.help_classes.InstanceParser import InstanceParser
+from skltemplate.help_classes.ErrorInfo import ErrorInfo
 
 import math
 
