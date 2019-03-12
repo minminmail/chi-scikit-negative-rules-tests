@@ -293,25 +293,25 @@ class parameter_prepare :
         return self.inference_type
 
 
-    def process_parameters(self,parameters):
+    def process_parameters(self):
         print("__init__ of Fuzzy_Chi begin...")
         self.train_myDataSet = MyDataSet()
         self.val_myDataSet = MyDataSet()
         self.test_myDataSet = MyDataSet()
         try:
           print("Reading the training set: ")
-          inputTrainingFile= parameters.getInputTrainingFiles()
+          inputTrainingFile= self.__trainingFile()
           print("In Fuzzy Chi init method the training file is :" + inputTrainingFile)
           self.train_myDataSet.readClassificationSet(inputTrainingFile, True)
           print(" ********* train_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
 
           print("Reading the validation set: ")
-          inputValidationFile=parameters.getValidationInputFile()
+          inputValidationFile=self.__validationFile()
           self.val_myDataSet.readClassificationSet(inputValidationFile, False)
           print(" ********* val_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
 
           print("Reading the test set: ")
-          self.test_myDataSet.readClassificationSet(parameters.getInputTestFiles(), False)
+          self.test_myDataSet.readClassificationSet(self.__testFile(), False)
           print(" ********* test_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
 
         except IOError as ioError :
@@ -326,22 +326,22 @@ class parameter_prepare :
         print(" ********* Three type of myDataSet readClassificationSet finished !!!!!! *********")
         self.somethingWrong = self.somethingWrong or self.train_myDataSet.hasMissingAttributes()
 
-        self.outputTr = parameters.getTrainingOutputFile()
-        self.outputTst = parameters.getTestOutputFile()
+        self.outputTr = self.__outputTrFile()
+        self.outputTst = self.__outputTstFile()
 
-        self.fileDB = parameters.getOutputFile(0)
-        self.fileRB = parameters.getOutputFile(1)
+        self.fileDB = self.get_output_file(0)
+        self.fileRB = self.get_output_file(1)
              #Now we parse the parameters
 
         #self.nLabels = parameters.getParameter(0)
-        self.nLabels = parameters.getParameter(0)
+        self.nLabels = self.get_parameter(0)
         print("nLabels is :" + str(self.nLabels))
-        aux = str(parameters.getParameter(1)).lower() #Computation of the compatibility degree
+        aux = str(self.get_parameter(1)).lower() #Computation of the compatibility degree
         print("parameter 1 aux is :" + str(aux))
         self.combinationType = self.PRODUCT
         if (aux == "minimum"):
             self.combinationType = self.MINIMUM
-        aux = str(parameters.getParameter(2)).lower()
+        aux = str(self.get_parameter(2)).lower()
         print("parameter 2 aux is :" + str(aux))
         self.ruleWeight = self.PCF_IV
         if (aux == "Certainty_Factor".lower()):
@@ -350,8 +350,9 @@ class parameter_prepare :
             self.ruleWeight = self.PCF_II
         elif (aux=="No_Weights".lower()):
             self.ruleWeight = self.NO_RW
-        aux = str(parameters.getParameter(3)).lower()
+        aux = str(self.get_parameter(3)).lower()
         print("parameter 3 aux is :" + str(aux))
         self.inferenceType = self.WINNING_RULE
         if(aux ==("Additive_Combination").lower()) :
             self.inferenceType = self.ADDITIVE_COMBINATION
+
