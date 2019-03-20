@@ -99,6 +99,8 @@ class Instance :
     ATT_OUTPUT = 1
      #Non-defined direction attributes location
     ATT_NONDEF = 2
+
+    y_class = None
     # /////////////////////////////////////////////////////////////////////////////
     # /////////////////// METHODS OF THE INSTANCE CLASS ///////////////////////////
     # /////////////////////////////////////////////////////////////////////////////
@@ -154,7 +156,9 @@ class Instance :
                     print("curAt.getType() == Attribute.NOMINAL")
                     currentClass = curAt.convertNominalValue(att)
 
-                    #System.out.println ( " The position of the current class "+ att +" is: "+ currentClass );
+                    print("The position of the current class "+ str(att) +" is: "+ str(currentClass) )
+                    self.y_class = currentClass
+                    print("self.y_class "+ " is: "+ str(self.y_class) )
                 curCount = outAttCount
                 outAttCount = outAttCount + 1
 
@@ -407,7 +411,7 @@ class Instance :
 
             elif(inOut!=2): #In test mode
                 print("self.isTrain and inOut != 2......")
-                self.__realValues[inOut][curCount] = curAtt.rectifyValueInBounds(self.__realValues[inOut][curCount]);
+                self.__realValues[inOut][curCount] = curAtt.rectifyValueInBounds(self.__realValues[inOut][curCount])
 
         elif(Attributes.getAttributeByPos(Attributes,count).getType()==Attribute.NOMINAL) :
             print("getType()==Attribute.NOMINAL......")

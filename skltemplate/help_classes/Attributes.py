@@ -136,7 +136,7 @@ class Attributes:
 #  * @param attr is the new attribute to be added.
 #  */
   def addAttribute(self, attr):
-    if(not self.isExistent(attr)):
+    if(not self.isExistent(self,attr)):
         print("In Atrributes class ,addAttribute begin......")
         self.attributes.append(attr)
         attType = attr.getType()
@@ -496,16 +496,16 @@ class Attributes:
 
         if attName in inAttNames:
             print("attName in inAttNames")
-            if(not self.hasSameAttributeName(attName,self.inputAttr)):
+            if(not self.hasSameAttributeName(self,attName,self.inputAttr)):
                 print("add in input attribute list, attName is:"+attName)
                 att.setDirectionAttribute(Attribute.INPUT)
                 self.inputAttr.append(self.attributes[i])
         elif (attName in outAttNames):
-            if(not self.hasSameAttributeName(attName,self.outputAttr)):
+            if(not self.hasSameAttributeName(self,attName,self.outputAttr)):
                 print("add in out attribute list, attName is:" + attName)
                 att.setDirectionAttribute(Attribute.OUTPUT)
                 self.outputAttr.append(self.attributes[i])
-        elif(not self.hasSameAttributeName(attName,self.undefinedAttr)):
+        elif(not self.hasSameAttributeName(self,attName,self.undefinedAttr)):
             print("add in undefinedAttr attribute list, attName is:" + attName)
             self.undefinedAttr.append(self.attributes[i])
 

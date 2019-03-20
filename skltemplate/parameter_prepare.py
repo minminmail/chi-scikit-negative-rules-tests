@@ -31,6 +31,8 @@ class parameter_prepare :
     WINNING_RULE = 0
     ADDITIVE_COMBINATION = 1
 
+    somethingWrong = False 
+
     rule_weight = None
     combination_type = None
     inference_type =None
@@ -40,6 +42,14 @@ class parameter_prepare :
     test_myDataSet = None
 
     nLabels = None
+    outputTr = None
+    outputTst = None
+
+    fileDB = None
+    fileRB = None
+
+    X = None
+    y = None
 
     # * Default constructor
 
@@ -211,6 +221,23 @@ class parameter_prepare :
     def get_input_files(self):
         return str(self.__inputFiles)
 
+     # * It returns the training_ input file
+     # *
+     # * @return the training_ input file
+
+
+    def get_training_input_file(self):
+        return self.__trainingFile
+
+     # * It returns the test input file
+     # *
+     # * @return the test input file
+
+
+    def get_test_input_file(self):
+        return self.__testFile
+
+
      # * It returns the validation input file
      # *
      # * @return the validation input file
@@ -310,18 +337,20 @@ class parameter_prepare :
         self.test_myDataSet = MyDataSet()
         try:
           print("Reading the training set: ")
-          inputTrainingFile= self.__trainingFile()
+          inputTrainingFile= self.get_training_input_file()
           print("In Fuzzy Chi init method the training file is :" + inputTrainingFile)
           self.train_myDataSet.readClassificationSet(inputTrainingFile, True)
           print(" ********* train_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
 
           print("Reading the validation set: ")
-          inputValidationFile=self.__validationFile()
+          inputValidationFile= self.get_validation_input_file()
           self.val_myDataSet.readClassificationSet(inputValidationFile, False)
           print(" ********* val_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
 
           print("Reading the test set: ")
-          self.test_myDataSet.readClassificationSet(self.__testFile(), False)
+
+          inputTestFile =  self.get_test_input_file()
+          self.test_myDataSet.readClassificationSet(inputTestFile, False)
           print(" ********* test_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
 
         except IOError as ioError :
@@ -335,12 +364,15 @@ class parameter_prepare :
         #     #somethingWrong = somethingWrong || train.hasNumericalAttributes();
         print(" ********* Three type of myDataSet readClassificationSet finished !!!!!! *********")
         self.somethingWrong = self.somethingWrong or self.train_myDataSet.hasMissingAttributes()
-
-        self.outputTr = self.__outputTrFile()
-        self.outputTst = self.__outputTstFile()
+        """
+        Maybe they are not necessary
+        self.outputTr = self.get_training_output_file()
+        self.outputTst = self.get_test_output_file()
 
         self.fileDB = self.get_output_file(0)
         self.fileRB = self.get_output_file(1)
+
+        """
              #Now we parse the parameters
 
         #self.nLabels = parameters.getParameter(0)
@@ -365,4 +397,23 @@ class parameter_prepare :
         self.inferenceType = self.WINNING_RULE
         if(aux ==("Additive_Combination").lower()) :
             self.inferenceType = self.ADDITIVE_COMBINATION
+
+    def get_X(self):
+
+        self.X = self.train_myDataSet.getX()
+        row_num = len(self.X)
+        column_num = len(self.X[0])
+        for i in range (0, row_num ) :
+            for j in range (0, column_num) :
+                print(self.X[i][j])
+            print("\n")
+
+    def get_y(self):
+
+        self.y = self.train_myDataSet.get_y()
+        lenght_y= len(self.y)
+        for i in range (0, lenght_y):
+            print(self.y[i])
+
+
 

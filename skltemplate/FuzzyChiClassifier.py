@@ -16,9 +16,9 @@ class FuzzyChiClassifier():
     combination_type = None
     rule_weight = None
     inference_type = None
-    ranges=ranges = None
+    ranges = None
     classes_ = None
-    train_dataSet= None
+    train_dataSet = None
 
     """ A template estimator to be used as a reference implementation.
 

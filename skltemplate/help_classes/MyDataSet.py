@@ -22,6 +22,7 @@ class MyDataSet:
     NOMINAL = 2
 
     __X=[] # examples array
+    __y = [] # store each instance class value
     __missing = [] # possible missing values
     __outputInteger = [] #  output of the data - set as integer values private
     __outputReal = [] # output of the data - set as double values
@@ -49,7 +50,13 @@ class MyDataSet:
     #  '''
     def getX(self):
         return self.__X
-    # '''
+
+     # '''
+    #    * Outputs an array of examples with their corresponding attribute values.
+    #    * @return y[] an array of examples classes with their corresponding attribute values
+    #  '''    
+    def get_y(self):
+        return self.__y
     #    * Output a specific example
     #    * @param pos int position (id) of the example in the data-set
     #    * @return double[] the attributes of the given example
@@ -245,6 +252,8 @@ class MyDataSet:
 
                   self.__X = [[None for y in range(nInputLength)] for x in range(nDataLength)]
 
+                  self.__y = [None for x in range(nDataLength)]
+
                   self.__missing = [[None for y in range(nInputLength)]for x in range(nDataLength)]
 
                   self.__outputInteger = [ None for x in range(nDataLength)]
@@ -265,6 +274,8 @@ class MyDataSet:
                   self.__nClasses = 0
                   for i in range( 0, nDataLength) :
                       inst = self.__instanceSet.getInstance(i)
+                      # add class y from instance to y array here
+                      self.__y[i] = self.__instanceSet.getInstance(i).y_class
                       for j in range( 0, nInputLength):
                            input_Numeric_Value = self.__instanceSet.getInputNumericValue(i, j)
                            print("self.__X [i] = "+ str(i)+",[j] = "+ str(j)+",input_Numeric_Value:"+str(input_Numeric_Value))
@@ -472,15 +483,25 @@ class MyDataSet:
               self.__average[i] = 0
               for j in range (0,dataNum ):
                 if not self.isMissing(j, i):
+                  print("1, self.__average[i] " + str(self.__average[i]))   
+                  print("1, self.__X[j][i] " + str(self.__X[j][i]))                
                   self.__average[i] =self.__average[i]+ self.__X[j][i]
+                 
               if(dataNum!=0):
                 self.__average[i] = self.__average[i] /dataNum
+                print("2, self.__average[i] " + str(self.__average[i]))
             average_length = len(self.__average)
+            print("average_length " + str(average_length))
             self.__average[average_length - 1] = 0
+            print("len(self.__outputReal) " + str(len(self.__outputReal)))
             for j in range( 0, len(self.__outputReal)):
-              self.__average[average_length - 1] = self.__average[average_length - 1]+self.__outputReal[j]
+              print("self.__average[average_length - 1] " + str(self.__average[average_length - 1]))
+              print("self.__outputReal[j]" + str(self.__outputReal[j]))
+              self.__average[average_length - 1] = self.__average[average_length - 1]+ int(self.__outputReal[j])
+              print("self.__average[average_length - 1] " + str(self.__average[average_length - 1]))
             if(len(self.__outputReal)!=0):
                 self.__average[average_length - 1] =self.__average[average_length - 1]/ len(self.__outputReal)
+                print("self.__average[average_length - 1]  " + str(self.__average[average_length - 1] ))
 
             for i in range( 0, inputNum):
               sum = 0.0
@@ -599,7 +620,8 @@ class MyDataSet:
     def getRanges(self):
 
       print("self.getnVars()" + str(self.getnVars()))
-      rangos =  [[0.0 for y in range (2)] for x in range (self.getnVars())]
+      m = int(self.getnVars())
+      rangos =  [[0.0 for y in range (2)] for x in range(m)]
       print("rangos has two dimensions, first is self.getnVars()=="+ str(self.getnVars())+",second is 2")
       for i in range( 0, self.getnInputs()):
         print("self.getnInputs()"+ str(self.getnInputs())+ " i = " + str(i))
