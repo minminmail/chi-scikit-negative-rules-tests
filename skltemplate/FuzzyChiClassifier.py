@@ -20,6 +20,14 @@ class FuzzyChiClassifier():
     classes_ = None
     train_dataSet = None
 
+    val_myDataSet = None
+    test_myDataSet = None
+    fileDB = None
+    fileRB = None
+    outputTr=""
+    outputTst=""
+
+
     """ A template estimator to be used as a reference implementation.
 
     For more information regarding how to build your own estimator, read more
@@ -51,13 +59,23 @@ class FuzzyChiClassifier():
 
 
     """
-    def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges,train_dataSet):
+    def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges,train_dataSet,val_myDataSet,test_myDataSet,outputTr,outputTst,fileDB,fileRB):
         self.number_of_labels = number_of_labels
         self.combination_type = combination_type
         self.rule_weight = rule_weight
         self.inference_type = inference_type
-        self.ranges=ranges
-        self.train_dataSet=train_dataSet
+        self.ranges = ranges
+        self.train_dataSet = train_dataSet
+        self.val_myDataSet = val_myDataSet
+        self.test_myDataSet = test_myDataSet
+        self.outputTr = outputTr
+        self.outputTst = outputTst
+        """
+        self.fileDB = parameters.getOutputFile(0)
+        self.fileRB = parameters.getOutputFile(1)
+        """
+        self.fileDB = fileDB
+        self.fileRB = fileRB
 
     def fit(self, X, y):
         """A reference implementation of a fitting function.
@@ -85,20 +103,69 @@ class FuzzyChiClassifier():
         self.y_ = y
 
         self.dataBase = DataBase()
-        """
-         self.train_myDataSet.getnInputs()=len(self.inputAttr)=input_attr_length
-         self.train_myDataSet.getNames()= nombres = ["" for x in range(self.__nInputs)]=nombres[i] = Attributes.getInputAttribute(Attributes,i).getName()
 
-        """
-
+        print("Before DataBase object has been created......")
         self.dataBase.setMultipleParameters(self.train_dataSet.getnInputs(), self.number_of_labels,self.ranges,self.train_dataSet.getNames())
-        print("DataBase object has been created......")
+        print("After DataBase object has been created......")
         self.ruleBase = RuleBase(self.dataBase, self.inference_type, self.combination_type,self.rule_weight, self.train_dataSet.getNames(), self.classes_)
 
         print("Data Base:\n"+self.dataBase.printString())
         self.ruleBase.Generation(self.train_dataSet)
+       
+
+        print("self.fileDB = " + str(self.fileDB))
+        print("self.fileRB = " + str(self.fileRB))
+        self.dataBase.writeFile(self.fileDB)
+        self.ruleBase.writeFile(self.fileRB)
+
+        #Finally we should fill the training and test output files
+        accTra = self.doOutput(self.val_myDataSet, self.outputTr)
+        accTst = self.doOutput(self.test_myDataSet, self.outputTst)
+
+        print("Accuracy obtained in training: "+ str(accTra))
+        print("Accuracy obtained in test: "+ str(accTst))
+        print("Algorithm Finished")
         # Return the classifier
         return self
+    
+    def doOutput(self,dataset, filename) :
+      try:
+          output = ""
+          hits = 0
+          self.output = dataset.copyHeader() #we insert the header in the output file
+          #We write the output for each example
+          print("before loop in Fuzzy_Chi")
+          print("dataset.getnData()"+ str(dataset.getnData()))
+          for i in range( 0, dataset.getnData()):
+            #for classification:
+            print("before classificationOutput in Fuzzy_Chi")
+            classOut = self.classificationOutput(dataset.getExample(i))
+            print("before getOutputAsStringWithPos in Fuzzy_Chi")
+            self.output = self.output + dataset.getOutputAsStringWithPos(i) + " " + classOut + "\n"
+            print("before getOutputAsStringWithPos in Fuzzy_Chi")
+            print("dataset.getOutputAsStringWithPos(i) :"+str(dataset.getOutputAsStringWithPos(i)))
+            print("classOut :"+str(classOut))
+            if (dataset.getOutputAsStringWithPos(i)==classOut):
+              hits=hits+1
+          print("before open file in Fuzzy_Chi")
+          file = open(filename,"w")
+          file.write(output)
+          file.close()
+      except Exception as excep:
+          print("There is exception in doOutput in Fuzzy chi class !!! The exception is :" + str(excep))
+      if (dataset.size()!=0):
+          return (1.0*hits/dataset.size())
+      else:
+          return 0
+    def classificationOutput(self,example):
+        self.output = "?"
+          # Here we should include the algorithm directives to generate the
+          # classification output from the input example
+        classOut = self.ruleBase.FRM(example)
+        if (classOut >= 0):
+          print("In Fuzzy_Chi,classOut >= 0, to call getOutputValue")
+          self.output = self.train_dataSet.getOutputValue(classOut)
+        return self.output
 
     def predict(self, X):
         """ A reference implementation of a predicting function.
@@ -229,7 +296,7 @@ class DataBase:
             numcols=len(self.dataBase[0])
 
             print("numrows: " + str(numrows) + "numcols:"+ str(numcols))
-            if(self.dataBase.size!=0):
+            if(numrows!=0):
                 print("cadena: "+cadena)
                 for i in range(0, self.n_variables):
                     print("i = " + str(i))
@@ -307,6 +374,7 @@ class RuleBase :
             for i in range( 0, train.size()) :
                 rule = self.searchForBestAntecedent(train.getExample(i),train.getOutputAsIntegerWithPos(i))
                 rule.assingConsequent(train, self.ruleWeight)
+                print("rule.weight  :" + str(rule.weight ))
                 if (not (self.duplicated(rule)) and(rule.weight > 0)):
                     self.ruleBase.append(rule)
          # * This function obtains the best fuzzy label for each variable of the example and assigns
@@ -505,6 +573,7 @@ class Rule:
    # * @param ruleWeight int the type of rule weight
 
   def assingConsequent(self,train, ruleWeight) :
+    print("In assingConsequent, ruleWeight = "+str(ruleWeight))
     if ruleWeight == parameter_prepare.parameter_prepare.CF:
       self.consequent_CF(train)
 

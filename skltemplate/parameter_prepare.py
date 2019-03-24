@@ -340,18 +340,18 @@ class parameter_prepare :
           inputTrainingFile= self.get_training_input_file()
           print("In Fuzzy Chi init method the training file is :" + inputTrainingFile)
           self.train_myDataSet.readClassificationSet(inputTrainingFile, True)
-          print(" ********* train_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
+          print(" ********* train_myDataSet.myDataSet readClassificationSet finished !!!!!! *********"+str(inputTrainingFile))
 
           print("Reading the validation set: ")
           inputValidationFile= self.get_validation_input_file()
           self.val_myDataSet.readClassificationSet(inputValidationFile, False)
-          print(" ********* val_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
+          print(" ********* val_myDataSet.myDataSet readClassificationSet finished !!!!!! *********"+str(inputValidationFile))
 
           print("Reading the test set: ")
 
           inputTestFile =  self.get_test_input_file()
           self.test_myDataSet.readClassificationSet(inputTestFile, False)
-          print(" ********* test_myDataSet.myDataSet readClassificationSet finished !!!!!! *********")
+          print(" ********* test_myDataSet.myDataSet readClassificationSet finished !!!!!! *********"+str(inputTestFile))
 
         except IOError as ioError :
             print ("I/O error: "+ str(ioError))
@@ -364,15 +364,14 @@ class parameter_prepare :
         #     #somethingWrong = somethingWrong || train.hasNumericalAttributes();
         print(" ********* Three type of myDataSet readClassificationSet finished !!!!!! *********")
         self.somethingWrong = self.somethingWrong or self.train_myDataSet.hasMissingAttributes()
-        """
-        Maybe they are not necessary
+        
         self.outputTr = self.get_training_output_file()
         self.outputTst = self.get_test_output_file()
 
         self.fileDB = self.get_output_file(0)
         self.fileRB = self.get_output_file(1)
 
-        """
+        
              #Now we parse the parameters
 
         #self.nLabels = parameters.getParameter(0)
@@ -385,13 +384,13 @@ class parameter_prepare :
             self.combinationType = self.MINIMUM
         aux = str(self.get_parameter(2)).lower()
         print("parameter 2 aux is :" + str(aux))
-        self.ruleWeight = self.PCF_IV
+        self.rule_weight = self.PCF_IV
         if (aux == "Certainty_Factor".lower()):
-            self.ruleWeight = self.CF
+            self.rule_weight = self.CF
         elif (aux=="Average_Penalized_Certainty_Factor".lower()):
-            self.ruleWeight = self.PCF_II
+            self.rule_weight = self.PCF_II
         elif (aux=="No_Weights".lower()):
-            self.ruleWeight = self.NO_RW
+            self.rule_weight = self.NO_RW
         aux = str(self.get_parameter(3)).lower()
         print("parameter 3 aux is :" + str(aux))
         self.inferenceType = self.WINNING_RULE
@@ -407,6 +406,7 @@ class parameter_prepare :
             for j in range (0, column_num) :
                 print(self.X[i][j])
             print("\n")
+        return self.X
 
     def get_y(self):
 
@@ -414,6 +414,10 @@ class parameter_prepare :
         lenght_y= len(self.y)
         for i in range (0, lenght_y):
             print(self.y[i])
+        return self.y
+
+    def getOutputFile(self, pos):
+        return self.__outputFiles[pos]
 
 
 
