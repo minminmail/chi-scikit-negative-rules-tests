@@ -138,15 +138,17 @@ class FuzzyChiClassifier():
           print("dataset.getnData()"+ str(dataset.getnData()))
           for i in range( 0, dataset.getnData()):
             #for classification:
-            print("before classificationOutput in Fuzzy_Chi")
+            
             classOut = self.classificationOutput(dataset.getExample(i))
-            print("before getOutputAsStringWithPos in Fuzzy_Chi")
+            
             self.output = self.output + dataset.getOutputAsStringWithPos(i) + " " + classOut + "\n"
-            print("before getOutputAsStringWithPos in Fuzzy_Chi")
+         
             print("dataset.getOutputAsStringWithPos(i) :"+str(dataset.getOutputAsStringWithPos(i)))
-            print("classOut :"+str(classOut))
+            print("classificationOutput,classOut :"+str(classOut))
             if (dataset.getOutputAsStringWithPos(i)==classOut):
+              
               hits=hits+1
+              print("data i  :" + str(i) + " has the Same class, hits is : " + str(hits))
           print("before open file in Fuzzy_Chi")
           file = open(filename,"w")
           file.write(output)
@@ -163,8 +165,9 @@ class FuzzyChiClassifier():
           # classification output from the input example
         classOut = self.ruleBase.FRM(example)
         if (classOut >= 0):
-          print("In Fuzzy_Chi,classOut >= 0, to call getOutputValue")
           self.output = self.train_dataSet.getOutputValue(classOut)
+          print("In Fuzzy_Chi,classificationOutput,classOut :"+str(classOut)+",self.output :"+str(self.output))
+
         return self.output
 
     def predict(self, X):
@@ -442,6 +445,7 @@ class RuleBase :
          # * @return int the predicted class label (id)
 
     def FRM(self,example):
+          print("Begin with FRM to get class of one example ......")
           if (self.inferenceType == parameter_prepare.parameter_prepare.WINNING_RULE):
                 return self.FRM_WR(example)
           else :
@@ -457,9 +461,11 @@ class RuleBase :
                 rule= self.ruleBase[i]
                 produc = rule.compatibility(example)
                 produc *= rule.weight
+                print("produc: "+ str(produc)+", rule.weight :"+str(rule.weight))
                 if (produc > max) :
-                    max = produc
+                    max = produc                  
                     clas = rule.clas
+                    print("max: "+ str(max)+", clas = rule.clas :"+str(clas))
             return clas
 
      # * Additive Combination FRM
@@ -592,11 +598,11 @@ class Rule:
 
   def compatibility(self,example):
     if (self.compatibilityType == parameter_prepare.parameter_prepare.MINIMUM):
-      #print("self.compatibilityType == Fuzzy_Chi.Fuzzy_Chi.MINIMUM")
+      print("self.compatibilityType == Fuzzy_Chi.Fuzzy_Chi.MINIMUM")
       return self.minimumCompatibility(example)
 
     else :
-      #print("self.compatibilityType != Fuzzy_Chi.Fuzzy_Chi.MINIMUM"+", self.compatibilityType = "+ str(self.compatibilityType))
+      print("self.compatibilityType != Fuzzy_Chi.Fuzzy_Chi.MINIMUM"+", self.compatibilityType = "+ str(self.compatibilityType))
       return self.productCompatibility(example)
 
 
@@ -624,13 +630,13 @@ class Rule:
 
     product = 1.0
     antecedent_number=len(self.antecedent)
-    #print("antecedent_number = " + str(antecedent_number))
+    print("antecedent_number = " + str(antecedent_number))
     for i in range( 0, antecedent_number):
-      #print("example[i="+ str(i)+"]"+":"+ str(example[i]))
+      print("example[i="+ str(i)+"]"+":"+ str(example[i]))
       membershipDegree = self.antecedent[i].setX(example[i])
-      #print("membershipDegree in productCompatibility  = " +str(membershipDegree))
+      print("membershipDegree in productCompatibility  = " +str(membershipDegree))
       product = product * membershipDegree
-    #print("product: "+ str(product))
+      print("product: "+ str(product))
     return product
 
    # * Classic Certainty Factor weight

@@ -393,9 +393,9 @@ class parameter_prepare :
             self.rule_weight = self.NO_RW
         aux = str(self.get_parameter(3)).lower()
         print("parameter 3 aux is :" + str(aux))
-        self.inferenceType = self.WINNING_RULE
+        self.inference_type = self.WINNING_RULE
         if(aux ==("Additive_Combination").lower()) :
-            self.inferenceType = self.ADDITIVE_COMBINATION
+            self.inference_type = self.ADDITIVE_COMBINATION
 
     def get_X(self):
 
