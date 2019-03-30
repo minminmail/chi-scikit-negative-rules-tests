@@ -13,6 +13,7 @@ from skltemplate.help_classes.Attributes import Attributes
 
 import math
 import sys
+import numpy as np
 class MyDataSet:
     # Number to represent type of variable real or double.
     REAL = 0
@@ -48,15 +49,16 @@ class MyDataSet:
     #    * Outputs an array of examples with their corresponding attribute values.
     #    * @return double[][] an array of examples with their corresponding attribute values
     #  '''
-    def getX(self):
-        return self.__X
-
+    def get_X(self):
+        
+        return np.array(self.__X)
      # '''
     #    * Outputs an array of examples with their corresponding attribute values.
     #    * @return y[] an array of examples classes with their corresponding attribute values
     #  '''    
+
     def get_y(self):
-        return self.__y
+        return np.array(self.__y)
     #    * Output a specific example
     #    * @param pos int position (id) of the example in the data-set
     #    * @return double[] the attributes of the given example
@@ -662,6 +664,9 @@ class MyDataSet:
         for i in range( 0, self.__nClasses):
           clases[i] = Attributes.getOutputAttribute(Attributes,0).getNominalValue(i)
         return clases
+
+
+        
 
 
 

@@ -8,6 +8,7 @@ This file is for prepare the config file and read training file or test file , t
 """
 
 from skltemplate.help_classes.MyDataSet import MyDataSet
+import numpy as np
 class parameter_prepare : 
 
     __algorithmName=""
@@ -399,21 +400,19 @@ class parameter_prepare :
 
     def get_X(self):
 
-        self.X = self.train_myDataSet.getX()
-        row_num = len(self.X)
-        column_num = len(self.X[0])
-        for i in range (0, row_num ) :
-            for j in range (0, column_num) :
-                print(self.X[i][j])
-            print("\n")
+        self.X = self.train_myDataSet.get_X()
+        # change into ndarray type
+        self.X = np.array(self.X )
+        print(self.X)
+
         return self.X
 
     def get_y(self):
 
         self.y = self.train_myDataSet.get_y()
-        lenght_y= len(self.y)
-        for i in range (0, lenght_y):
-            print(self.y[i])
+        self.y = np.array(self.y )
+        print(self.y)
+
         return self.y
 
     def getOutputFile(self, pos):

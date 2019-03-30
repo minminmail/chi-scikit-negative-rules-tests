@@ -6,7 +6,7 @@ from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import euclidean_distances
-from skltemplate import parameter_prepare
+from skltemplate.parameter_prepare import parameter_prepare
 from skltemplate.help_classes.MyDataSet import MyDataSet
 
 
@@ -184,19 +184,21 @@ class FuzzyChiClassifier():
             The label for each sample is the label of the closest sample
             seen udring fit.
         """
-        X = check_array(X, accept_sparse=True)
-        check_is_fitted(self, 'is_fitted_')
-        return np.ones(X.shape[0], dtype=np.int64)
-        """
-        # Check is fit had been called
-        check_is_fitted(self, ['X_', 'y_'])
 
         # Input validation
-        X = check_array(X)
+        X = check_array(X, accept_sparse=True)
+        # Check is fit had been called
+        check_is_fitted(self,['X_', 'y_'], 'is_fitted_')
 
-        closest = np.argmin(euclidean_distances(X, self.X_), axis=1)
-        return self.y_[closest]
-        """
+        row_num = X.shape[0] 
+        predict_y=np.empty([row_num,1], dtype= "U20")
+
+        for i in range(0, row_num) :          
+            predict_y[i]=self.ruleBase.FRM(X[i])
+        print("predict_y is :" )
+        print( predict_y)
+
+        return predict_y[i]
 
 class DataBase:
     n_variables = None
@@ -446,7 +448,7 @@ class RuleBase :
 
     def FRM(self,example):
           print("Begin with FRM to get class of one example ......")
-          if (self.inferenceType == parameter_prepare.parameter_prepare.WINNING_RULE):
+          if (self.inferenceType == parameter_prepare.WINNING_RULE):
                 return self.FRM_WR(example)
           else :
                 return self.FRM_AC(example)
@@ -580,16 +582,16 @@ class Rule:
 
   def assingConsequent(self,train, ruleWeight) :
     print("In assingConsequent, ruleWeight = "+str(ruleWeight))
-    if ruleWeight == parameter_prepare.parameter_prepare.CF:
+    if ruleWeight == parameter_prepare.CF:
       self.consequent_CF(train)
 
-    elif ruleWeight == parameter_prepare.parameter_prepare.PCF_II:
+    elif ruleWeight == parameter_prepare.PCF_II:
       self.consequent_PCF2(train)
 
-    elif ruleWeight == parameter_prepare.parameter_prepare.PCF_IV:
+    elif ruleWeight == parameter_prepare.PCF_IV:
       self.consequent_PCF4(train)
 
-    elif ruleWeight == parameter_prepare.parameter_prepare.NO_RW:
+    elif ruleWeight == parameter_prepare.NO_RW:
       self.weight = 1.0
 
    # * It computes the compatibility of the rule with an input example
@@ -597,7 +599,7 @@ class Rule:
    # * @return double the degree of compatibility
 
   def compatibility(self,example):
-    if (self.compatibilityType == parameter_prepare.parameter_prepare.MINIMUM):
+    if (self.compatibilityType == parameter_prepare.MINIMUM):
       print("self.compatibilityType == Fuzzy_Chi.Fuzzy_Chi.MINIMUM")
       return self.minimumCompatibility(example)
 
