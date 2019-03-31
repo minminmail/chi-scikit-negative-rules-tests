@@ -191,7 +191,7 @@ class FuzzyChiClassifier():
         check_is_fitted(self,['X_', 'y_'], 'is_fitted_')
 
         row_num = X.shape[0] 
-        predict_y=np.empty([row_num,1], dtype= "U20")
+        predict_y=np.empty([row_num,1], dtype= np.int32)
 
         for i in range(0, row_num) :          
             predict_y[i]=self.ruleBase.FRM(X[i])
@@ -199,7 +199,45 @@ class FuzzyChiClassifier():
         print( predict_y)
 
         return predict_y[i]
+  
+    def score(self, test_X, test_y):
+        """ A reference implementation of score function.
 
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape (n_samples, n_features)
+            The test input samples.
+
+        Returns
+        -------
+        y : ndarray, shape (n_samples,)
+            The label for each test sample is the label of the closest test sample
+            seen udring fit.
+        """
+
+        # Input validation
+        test_X = check_array(test_X, accept_sparse=True)
+        # Check is fit had been called
+        check_is_fitted(self,['X_', 'y_'], 'is_fitted_')
+
+        row_num = test_X.shape[0] 
+        print("row_num in score is :" +str(row_num))
+        predict_y=np.empty([row_num,1], dtype= np.int32)
+        hits=0
+
+        for i in range(0, row_num) :          
+            predict_y[i]=self.ruleBase.FRM(test_X[i])
+            print("predict_y[" +str(i)+"] is :" +str(predict_y[i]))
+            print("test_y[" +str(i)+"] is :" +str(test_y[i]))
+
+            if(predict_y[i]==test_y[i]):
+              hits=hits+1
+
+        print("predict_y in score is :" )
+        score =1.0*hits/row_num
+        print( score)
+     
+        return score
 class DataBase:
     n_variables = None
     n_labels = None
