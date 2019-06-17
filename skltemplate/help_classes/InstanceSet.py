@@ -58,6 +58,7 @@ from skltemplate.help_classes.InstanceAttributes import InstanceAttributes
 from skltemplate.help_classes.Instance import Instance
 from skltemplate.help_classes.ErrorInfo import ErrorInfo
 from pathlib import Path
+import os
 
 class InstanceSet:
 
@@ -99,7 +100,9 @@ class InstanceSet:
     # /////////////////////////////////////////////////////////////////////////////
 
     # It instances a new instance of InstanceSet
-    data_folder = Path("D:/pythonAlgorithms/PythonChi/Chi_RW/main/simpleTest/datasets/iris/")
+    #data_folder = Path("D:/pythonAlgorithms/PythonChi/Chi_RW/main/simpleTest/datasets/iris/")
+    # read current work folder 
+    data_folder = os.getcwd()+"\\toy1\\"
     file_to_open= None
     data_lines=None
 
@@ -177,7 +180,7 @@ class InstanceSet:
         try:
             # Parsing the header of the DB.
             errorLogger = FormatErrorKeeper()
-            self.file_to_open=self.data_folder/fileName
+            self.file_to_open=self.data_folder + fileName
                 # Declaring an instance parser
             print("In readSet,file_to_open is:"+ str(self.file_to_open))
             # to do The exception in init InstanceParserof InstanceParse is: can only concatenate str (not "WindowsPath") to str
@@ -334,9 +337,12 @@ class InstanceSet:
         print("token_double is:" + token_withT + ", line is :" + line)
         # System.out.println ("  > Processing line: "+  line );
         #st = line.split(" [{\t");
+       
 
         st = line.split("\t")# first we need to split the attribute line into two part , attribute name and attribute values
-
+        print("word in st are as below: ")
+        for word in st:
+            print(word)
 
         # Disregarding the first token. It is @attribute
         st[0] = st[0].replace("@attribute","").strip()  # delete @attribute

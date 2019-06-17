@@ -406,7 +406,7 @@ class RuleBase :
             found = False
             while ((i < len(self.ruleBase)) and (not found)):
                 found = self.ruleBase[i].comparison(rule)
-                i+=1
+                i=i+1
             return found
 
          # * Rule Learning Mechanism for the Chi et al.'s method
