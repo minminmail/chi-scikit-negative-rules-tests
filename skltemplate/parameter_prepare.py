@@ -345,12 +345,14 @@ class parameter_prepare :
 
           print("Reading the validation set: ")
           inputValidationFile= self.get_validation_input_file()
+          print("In Fuzzy Chi init method the inputValidationFile  is :" + inputValidationFile)
           self.val_myDataSet.readClassificationSet(inputValidationFile, False)
           print(" ********* val_myDataSet.myDataSet readClassificationSet finished !!!!!! *********"+str(inputValidationFile))
 
           print("Reading the test set: ")
 
           inputTestFile =  self.get_test_input_file()
+          print("In Fuzzy Chi init method the inputTestFile  is :" + inputTestFile)
           self.test_myDataSet.readClassificationSet(inputTestFile, False)
           print(" ********* test_myDataSet.myDataSet readClassificationSet finished !!!!!! *********"+str(inputTestFile))
 
@@ -392,6 +394,7 @@ class parameter_prepare :
             self.rule_weight = self.PCF_II
         elif (aux=="No_Weights".lower()):
             self.rule_weight = self.NO_RW
+        print("self.rule_weight is :" + str(self.rule_weight))
         aux = str(self.get_parameter(3)).lower()
         print("parameter 3 aux is :" + str(aux))
         self.inference_type = self.WINNING_RULE

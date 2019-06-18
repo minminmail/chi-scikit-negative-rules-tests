@@ -1,9 +1,9 @@
 @Number of rules: 7
 
-1: feature1 IS L_0 AND feature2 IS L_0: 0 with Rule Weight: 0.5458474245899871
-2: feature1 IS L_1 AND feature2 IS L_0: 1 with Rule Weight: 0.18615820763607266
-3: feature1 IS L_2 AND feature2 IS L_0: 1 with Rule Weight: 0.3789993943595659
-4: feature1 IS L_0 AND feature2 IS L_1: 1 with Rule Weight: 0.31310960821372336
-5: feature1 IS L_0 AND feature2 IS L_2: 2 with Rule Weight: 0.24053045365875847
-6: feature1 IS L_1 AND feature2 IS L_2: 0 with Rule Weight: 0.11953714943234636
-7: feature1 IS L_2 AND feature2 IS L_2: 0 with Rule Weight: 0.9163440389334767
+1: feature1 IS L_0 AND feature2 IS L_0: 0 with Rule Weight: 0.6091182684258193
+2: feature1 IS L_1 AND feature2 IS L_0: 1 with Rule Weight: 0.1411847199784601
+3: feature1 IS L_2 AND feature2 IS L_0: 1 with Rule Weight: 0.3869359319616274
+4: feature1 IS L_0 AND feature2 IS L_1: 1 with Rule Weight: 0.26214167737987226
+5: feature1 IS L_0 AND feature2 IS L_2: 2 with Rule Weight: 0.094230245716244
+6: feature1 IS L_1 AND feature2 IS L_2: 0 with Rule Weight: 0.07620822537135177
+7: feature1 IS L_2 AND feature2 IS L_2: 0 with Rule Weight: 0.9387070293254679
