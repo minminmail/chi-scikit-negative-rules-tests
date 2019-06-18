@@ -460,14 +460,14 @@ class RuleBase :
             i=None
             j= None
             cadena = ""
-            cadena += "@Number of rules: " + str(len(self.ruleBase)) + "\n\n"
+            cadena = cadena + "@Number of rules: " + str(len(self.ruleBase)) + "\n\n"
             for i in range( 0, len(self.ruleBase)):
                 rule = self.ruleBase[i]
-                cadena += str(i + 1) + ": "
+                cadena = cadena + str(i + 1) + ": "
                 for j in range(0,  self.n_variables - 1) :
-                    cadena += self.names[j] + " IS " + rule.antecedent[j].name + " AND "
+                    cadena =cadena + self.names[j] + " IS " + rule.antecedent[j].name + " AND "
                 j=j+1
-                cadena += self.names[j] + " IS " + rule.antecedent[j].name + ": " + str(self.classes[rule.clas]) + " with Rule Weight: " + str(rule.weight) + "\n"
+                cadena =cadena + self.names[j] + " IS " + rule.antecedent[j].name + ": " + str(self.classes[rule.clas]) + " with Rule Weight: " + str(rule.weight) + "\n"
             print("RuleBase cadena is:" + cadena)
             return cadena
 
@@ -500,7 +500,7 @@ class RuleBase :
             for i in range( 0, len(self.ruleBase)):
                 rule= self.ruleBase[i]
                 produc = rule.compatibility(example)
-                produc *= rule.weight
+                produc = produc * rule.weight
                 print("produc: "+ str(produc)+", rule.weight :"+str(rule.weight))
                 if (produc > max) :
                     max = produc                  

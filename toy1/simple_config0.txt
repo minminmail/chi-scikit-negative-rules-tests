@@ -1,6 +1,6 @@
 algorithm = Chi Fuzzy Weighted Rule Learning Model
 inputData = "../toy1/simple-10-1tra.dat" "../toy1/simple-10-1tra.dat" "../toy1/simple-10-1tst.dat"
-outputData =" ../toy1/results/result0.tra""../toy1/results/result0.tst" "../toy1/results/result0e0.txt" "../toy1/results/result0e1.txt"
+outputData = " ../toy1/results/result0.tra" "../toy1/results/result0.tst" "../toy1/results/result0e0.txt" "../toy1/results/result0e1.txt"
 Number of Labels = 3
 T-norm for the Computation of the Compatibility Degree = Product
 Rule Weight = Penalized_Certainty_Factor

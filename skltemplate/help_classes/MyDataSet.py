@@ -230,7 +230,7 @@ class MyDataSet:
                     for outAtt in outAttrs:
                         i=1
                         print ("Att" + str(i) + str(outAtt.getName()))
-                        i+=1
+                        i=i+1
                     print(""+Attributes.getOutputAttributesHeader(Attributes))
                     print("This algorithm can not process MIMO datasets")
                     print("All outputs but the first one will be removed")
@@ -392,15 +392,15 @@ class MyDataSet:
         print("copyHeader begin...., P is :" + p)
         p = "@relation " + Attributes.getRelationName(Attributes) + "\n"
         print(" after relation P is :" + p)
-        p += Attributes.getInputAttributesHeader(Attributes)
+        p = p + Attributes.getInputAttributesHeader(Attributes)
         print(" after getInputAttributesHeader P is :" + p)
-        p += Attributes.getOutputAttributesHeader(Attributes)
+        p = p + Attributes.getOutputAttributesHeader(Attributes)
         print(" after getOutputAttributesHeader P is :" + p)
-        p += Attributes.getInputHeader(Attributes) + "\n"
+        p = p + Attributes.getInputHeader(Attributes) + "\n"
         print(" after getInputHeader P is :" + p)
-        p += Attributes.getOutputHeader(Attributes) + "\n"
+        p = p + Attributes.getOutputHeader(Attributes) + "\n"
         print(" after getOutputHeader P is :" + p)
-        p += "@data\n"
+        p = p + "@data\n"
 
         print("P is :" +p)
         return p
@@ -519,9 +519,9 @@ class MyDataSet:
 
             sum = 0.0
             for j in range(0, len(self.__outputReal)):
-              sum += (self.__outputReal[j] - self.__average[average_length - 1]) *(self.__outputReal[j] - self.__average[average_length - 1])
+              sum = sum + (self.__outputReal[j] - self.__average[average_length - 1]) *(self.__outputReal[j] - self.__average[average_length - 1])
             if (len(self.__outputReal) != 0):
-                sum /= len(self.__outputReal)
+                sum =sum / len(self.__outputReal)
             self.__stdev[len(self.__stdev) - 1] = math.sqrt(sum)
             print("sum is :" + str(sum) + "  self.__stdev :" + str(self.__stdev))
         except Exception as error:
