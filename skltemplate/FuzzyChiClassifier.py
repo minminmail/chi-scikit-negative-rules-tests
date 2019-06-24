@@ -25,7 +25,8 @@ class FuzzyChiClassifier():
     fileDB = None
     fileRB = None
     outputTr=""
-    outputTst=""
+    outputTst="
+    ruleBase = None
 
 
     """ A template estimator to be used as a reference implementation.
