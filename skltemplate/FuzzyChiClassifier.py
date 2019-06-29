@@ -8,6 +8,7 @@ from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import euclidean_distances
 from skltemplate.parameter_prepare import parameter_prepare
 from skltemplate.help_classes.MyDataSet import MyDataSet
+import os
 
 
 class FuzzyChiClassifier():
@@ -25,8 +26,10 @@ class FuzzyChiClassifier():
     fileDB = None
     fileRB = None
     outputTr=""
-    outputTst="
+    outputTst=""
     ruleBase = None
+    path_name =  None
+    data_folder = None
 
 
     """ A template estimator to be used as a reference implementation.
@@ -60,7 +63,7 @@ class FuzzyChiClassifier():
 
 
     """
-    def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges,train_dataSet,val_myDataSet,test_myDataSet,outputTr,outputTst,fileDB,fileRB):
+    def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges,train_dataSet,val_myDataSet,test_myDataSet,outputTr,outputTst,fileDB,fileRB,path_name):
         self.number_of_labels = number_of_labels
         self.combination_type = combination_type
         self.rule_weight = rule_weight
@@ -77,6 +80,7 @@ class FuzzyChiClassifier():
         """
         self.fileDB = fileDB
         self.fileRB = fileRB
+        self.path_name = path_name
 
     def fit(self, X, y):
         """A reference implementation of a fitting function.
@@ -116,8 +120,11 @@ class FuzzyChiClassifier():
 
         print("self.fileDB = " + str(self.fileDB))
         print("self.fileRB = " + str(self.fileRB))
-        self.dataBase.writeFile(self.fileDB)
-        self.ruleBase.writeFile(self.fileRB)
+        self.data_folder = os.getcwd()+"\\"+self.path_name+"\\"
+        db_file=self.data_folder+"\\"+self.fileDB
+        self.dataBase.writeFile(db_file)
+        rule_file=self.data_folder+"\\"+self.fileRB
+        self.ruleBase.writeFile(rule_file)
 
         #Finally we should fill the training and test output files
         accTra = self.doOutput(self.val_myDataSet, self.outputTr)
@@ -151,9 +158,13 @@ class FuzzyChiClassifier():
               hits=hits+1
               print("data i  :" + str(i) + " has the Same class, hits is : " + str(hits))
           print("before open file in Fuzzy_Chi")
-          file = open(filename,"w")
-          file.write(output)
-          file.close()
+
+          cwd = os.getcwd()
+          output_file = cwd+ "\\"+self.path_name +"\\"+filename
+          with open(output_file,'w') as result_file :
+              result_file.write(output)
+          result_file.close()
+
       except Exception as excep:
           print("There is exception in doOutput in Fuzzy chi class !!! The exception is :" + str(excep))
       if (dataset.size()!=0):
@@ -360,10 +371,13 @@ class DataBase:
     # '''
     def writeFile(self,filename):
 
-            file=open(filename, "w")
-            outputString = self.printString()
-            file.write(outputString)
-            file.close()
+      print("file to write is : " + filename)
+ 
+      with open(filename,'w') as file_here :
+          outputString = self.printString()
+          file_here.write(outputString)
+      file_here.close()
+
 class RuleBase :
 
     ruleBase=[]

@@ -42,8 +42,8 @@ class MyDataSet:
     __instancesCl=[]
     #  *Init a new set of instances
 
-    def __init__(self):
-        self.__instanceSet = InstanceSet()
+    def __init__(self,path_name):
+        self.__instanceSet = InstanceSet(path_name)
 
     # '''
     #    * Outputs an array of examples with their corresponding attribute values.

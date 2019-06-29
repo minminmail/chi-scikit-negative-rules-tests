@@ -9,6 +9,7 @@ This file is for prepare the config file and read training file or test file , t
 
 from skltemplate.help_classes.MyDataSet import MyDataSet
 import numpy as np
+import os
 class parameter_prepare : 
 
     __algorithmName=""
@@ -52,6 +53,9 @@ class parameter_prepare :
     X = None
     y = None
 
+    path_name = None
+    data_folder = None
+
     # * Default constructor
 
     def __init__(self):
@@ -60,8 +64,11 @@ class parameter_prepare :
         self.__parameters = []
 
 
-    def parse_configuration_file(self,file_name) :
+    def parse_configuration_file(self,path_name,file_name) :
         print("parse_configuration_file begin...... ")
+        self.path_name = path_name
+        self.data_folder = os.getcwd()+"\\"+path_name+"\\"
+        file_name = self.data_folder + file_name
         file = open(file_name,"r")
         file_String = file.read()
         line =  file_String.splitlines()
@@ -333,9 +340,9 @@ class parameter_prepare :
 
     def process_parameters(self):
         print("__init__ of Fuzzy_Chi begin...")
-        self.train_myDataSet = MyDataSet()
-        self.val_myDataSet = MyDataSet()
-        self.test_myDataSet = MyDataSet()
+        self.train_myDataSet = MyDataSet(self.path_name)
+        self.val_myDataSet = MyDataSet(self.path_name)
+        self.test_myDataSet = MyDataSet(self.path_name)
         try:
           print("Reading the training set: ")
           inputTrainingFile= self.get_training_input_file()

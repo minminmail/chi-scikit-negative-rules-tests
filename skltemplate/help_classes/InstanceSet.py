@@ -102,15 +102,17 @@ class InstanceSet:
     # It instances a new instance of InstanceSet
     #data_folder = Path("D:/pythonAlgorithms/PythonChi/Chi_RW/main/simpleTest/datasets/iris/")
     # read current work folder 
-    data_folder = os.getcwd()+"\\toy1\\"
+    data_folder = os.getcwd()
     file_to_open= None
     data_lines=None
+    path_name = None
 
 
-    def __init__(self):
+    def __init__(self,path_name):
         print("In __init__ method in InstanceSet.")
         self.storeAttributesAsNonStatic = False
         self.attributes = None
+        self.path_name = path_name
 
     def InstanceSetWithNonSAtrr(self, nonStaticAttributes):
         self.storeAttributesAsNonStatic = nonStaticAttributes
@@ -180,7 +182,7 @@ class InstanceSet:
         try:
             # Parsing the header of the DB.
             errorLogger = FormatErrorKeeper()
-            self.file_to_open=self.data_folder + fileName
+            self.file_to_open=self.data_folder +"\\" + self.path_name +"\\"+ fileName
                 # Declaring an instance parser
             print("In readSet,file_to_open is:"+ str(self.file_to_open))
             # to do The exception in init InstanceParserof InstanceParse is: can only concatenate str (not "WindowsPath") to str
@@ -322,7 +324,7 @@ class InstanceSet:
         print("Insert attribute begin :")
         indexL = 0
         indexR = 0
-        type = ""
+        attType = ""
 
         # Treating string and declaring a string tokenizer
         if "{" in line:
