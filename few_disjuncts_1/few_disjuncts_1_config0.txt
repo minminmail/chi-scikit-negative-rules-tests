@@ -1,0 +1,7 @@
+algorithm = Chi Fuzzy Weighted Rule Learning Model
+inputData = "../few_disjuncts_1/few_disjuncts_1tra.dat" "../few_disjuncts_1/few_disjuncts_1tra.dat" "../few_disjuncts_1/few_disjuncts_1tst.dat"
+outputData = " ../few_disjuncts_1/results/result0.tra" "../few_disjuncts_1/results/result0.tst" "../few_disjuncts_1/results/result0e0.txt" "../few_disjuncts_1/results/result0e1.txt"
+Number of Labels = 2
+T-norm for the Computation of the Compatibility Degree = Product
+Rule Weight = Penalized_Certainty_Factor
+Fuzzy Reasoning Method = Winning_Rule

@@ -385,7 +385,7 @@ class parameter_prepare :
              #Now we parse the parameters
 
         #self.nLabels = parameters.getParameter(0)
-        self.nLabels = self.get_parameter(0)
+        self.nLabels = self.get_parameter(0).strip()
         print("nLabels is :" + str(self.nLabels))
         aux = str(self.get_parameter(1)).lower() #Computation of the compatibility degree
         print("parameter 1 aux is :" + str(aux))

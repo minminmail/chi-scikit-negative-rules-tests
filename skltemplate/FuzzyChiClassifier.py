@@ -64,7 +64,7 @@ class FuzzyChiClassifier():
 
     """
     def __init__(self, number_of_labels,combination_type,rule_weight,inference_type,ranges,train_dataSet,val_myDataSet,test_myDataSet,outputTr,outputTst,fileDB,fileRB,path_name):
-        self.number_of_labels = number_of_labels
+        self.number_of_labels = number_of_labels.strip()
         self.combination_type = combination_type
         self.rule_weight = rule_weight
         self.inference_type = inference_type
@@ -110,6 +110,7 @@ class FuzzyChiClassifier():
         self.dataBase = DataBase()
 
         print("Before DataBase object has been created......")
+        print("before pass into self.dataBase.setMultipleParameters,self.number_of_labels is :"+ self.number_of_labels)
         self.dataBase.setMultipleParameters(self.train_dataSet.getnInputs(), self.number_of_labels,self.ranges,self.train_dataSet.getNames())
         print("After DataBase object has been created......")
         self.ruleBase = RuleBase(self.dataBase, self.inference_type, self.combination_type,self.rule_weight, self.train_dataSet.getNames(), self.classes_)
